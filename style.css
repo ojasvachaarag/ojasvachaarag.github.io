@@ -147,6 +147,11 @@ nav ul li a:hover::after{
     font-size: 14px;
 }
 
+.tab-contents ul li span a {
+    color: inherit; /* Inherit color from the parent span */
+    text-decoration: none; /* Remove underline */
+}
+
 .experience-time{
     font-size: 14px;
 }
