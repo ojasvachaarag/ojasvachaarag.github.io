@@ -14,7 +14,7 @@
         <div id = "header">
             <div class = "container">
                 <nav>
-                    <a href="index.html"><img src = "Images/logo.png" class = "logo"></a>
+                    <a href="index.html"><img src = "Assets/Images/logo.png" class = "logo"></a>
                     <ul id = "sidemenu">
                         <li><a href = "#contact">Contact</a></li>
                         <i class="fa-solid fa-circle-xmark" onclick = "closemenu()"></i>
@@ -27,7 +27,7 @@
             <div class = "container">
                 <div class = "row">
                     <div class = "about-col-1">
-                        <img src = "Images/projects.png">
+                        <img src = "Assets/Images/projects.png">
                     </div>
                     <div class = "about-col-2">
                         <h1 class = "sub-title">
@@ -138,7 +138,7 @@
                             <a href="https://www.linkedin.com/in/ojasva-chaarag/"><i class="fa-brands fa-linkedin-in"></i></a>
                             <a href="https://www.instagram.com/ojasva_chaarag/"><i class="fa-brands fa-instagram"></i></a>
                         </div>
-                        <a href="Images/Ojasva Chaarag - CV.pdf" download class = "btn btn2">Download CV</a>
+                        <a href="Assets/Ojasva Chaarag - CV.pdf" download class = "btn btn2">Download CV</a>
                     </div>
                     <div class="contact-right">
                         <form id="contact-form">
@@ -154,6 +154,18 @@
                 <p>Copyright 2025 © Ojasva Chaarag</p>
             </div>
         </div>
+        <div class="music-control">
+            <button id="toggle-control"><i class="fa-solid fa-chevron-up"></i></button>
+            <div class="control-content">
+                <button id="prev-track"><i class="fa-solid fa-backward"></i></button>
+                <button id="play-pause"><i class="fa-solid fa-play"></i></button>
+                <button id="next-track"><i class="fa-solid fa-forward"></i></button>
+                <p id="track-info">No track playing</p>
+            </div>
+            <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0.5">
+            <button id="mute-toggle"><i class="fa-solid fa-volume-up"></i></button>
+        </div>        
+        
         <script>
             var tablinks = document.getElementsByClassName("tab-links");
             var tabcontents = document.getElementsByClassName("tab-contents");
@@ -186,36 +198,79 @@
         </script>
 
         <script>
-            const form = document.getElementById('contact-form');
-          
-            form.addEventListener('submit', async function (e) {
-              e.preventDefault(); // Prevent page reload
-          
-              const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                message: document.getElementById('message').value
-              };
-          
-              const googleScriptURL = "https://script.google.com/macros/s/AKfycbwoxgq2ZALFJXVyZ9ViHJaOIvCzE6gmDKicu9M8ajD6Z9e4WWAb9qjYdu3RZLVgNS_aBw/exec";
-          
-              try {
-                const response = await fetch(googleScriptURL, {
-                  method: "POST",
-                  mode: "no-cors",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify(formData)
-                });
-          
-                alert("Message sent successfully!");
-                form.reset();
-              } catch (error) {
-                alert("Error submitting form. Please try again.");
-                console.error("Error:", error);
-              }
+            const toggleButton = document.getElementById("toggle-control");
+            const musicControl = document.querySelector(".music-control");
+
+            toggleButton.addEventListener("click", () => {
+                musicControl.classList.toggle("collapsed");
+
+                // Toggle icon change
+                if (musicControl.classList.contains("collapsed")) {
+                    toggleButton.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+                } else {
+                    toggleButton.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+                }
             });
-          </script>          
+
+            const tracks = [
+                { src: "Assets/Music/Prism.mp3", title: "Prism - Theatre of Delays (Licence Code: UHJXLPIJE1BCMOSU)" },
+                { src: "Assets/Music/Long-Night.mp3", title: "Long Night - Adventure (License code: GUEMOBY8XQ411ZBZ)" },
+                { src: "Assets/Music/track3.mp3", title: "Refract - Diffie Bosman (License code: NVSCO4EWRXAYTYDU)" }
+            ];
+
+            const audio = new Audio();
+            let currentTrackIndex = 0;
+
+            const playPauseButton = document.getElementById("play-pause");
+            const nextButton = document.getElementById("next-track");
+            const prevButton = document.getElementById("prev-track");
+            const volumeControl = document.getElementById("volume-control");
+            const muteButton = document.getElementById("mute-toggle");
+            const trackInfo = document.getElementById("track-info");
+
+            function loadTrack(index) {
+                audio.src = tracks[index].src;
+                trackInfo.textContent = tracks[index].title;
+                audio.play();
+                playPauseButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            }
+
+            playPauseButton.addEventListener("click", () => {
+                if (audio.paused) {
+                    audio.play();
+                    playPauseButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                } else {
+                    audio.pause();
+                    playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>';
+                }
+            });
+
+            nextButton.addEventListener("click", () => {
+                currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+                loadTrack(currentTrackIndex);
+            });
+
+            prevButton.addEventListener("click", () => {
+                currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+                loadTrack(currentTrackIndex);
+            });
+
+            volumeControl.addEventListener("input", () => {
+                audio.volume = volumeControl.value;
+            });
+
+            muteButton.addEventListener("click", () => {
+                if (audio.muted) {
+                    audio.muted = false;
+                    muteButton.innerHTML = '<i class="fa-solid fa-volume-up"></i>';
+                } else {
+                    audio.muted = true;
+                    muteButton.innerHTML = '<i class="fa-solid fa-volume-mute"></i>';
+                }
+            });
+
+            // Load the first track on page load
+            window.addEventListener("load", () => loadTrack(currentTrackIndex));
+        </script>        
     </body>
 </html>
