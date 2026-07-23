@@ -110,7 +110,7 @@
                                         Leadership
                                     </span>
                                     <br>
-                                    Decision Making, Delegation, Crtical Thinking, Problem Solving
+                                    Decision Making, Delegation, Critical Thinking, Problem Solving
                                 </li>
                                 <li>
                                     <span>
@@ -162,7 +162,7 @@
                                 </li>
                                 <li>
                                     <span>
-                                        <a href = "Assets/WESEE Internship Certificate.pdf">AI&ML Research Intern</a> - WESEE (Under Ministry of Defence)
+                                        <a href = "Assets/WESEE Internship Certificate 1.pdf">AI&ML Research Intern</a> - WESEE (Under Ministry of Defence)
                                     </span>
                                     <span class = "experience-time">
                                         (July 2024)
@@ -195,7 +195,7 @@
                                         Developer - Paneity/PanDeity
                                     </span>
                                     <span class = "experience-time">
-                                        (September 2022 - Nivember 2022)
+                                        (September 2022 - November 2022)
                                     </span>
                                     <br>
                                     A personal project to develop a prototype for a new programming language (Paneity) and a compiler (PanDeity) for the same
@@ -293,7 +293,7 @@
                 <div class="row">
                     <div class="contact-left">
                         <h1 class = "sub-title">Contact Me</h1>
-                        <p><a href="mailto:ojasvachaarag@gmail.com"><i class="fa-solid fa-paper-plane"></i></a>ojasvachaarag@gmail.com</p>
+                        <p><a href="mailto:ojasvachaarag@gmail.com"><i class="fa-solid fa-paper-plane"></i> ojasvachaarag@gmail.com</a></p>
                         <p><i class="fa-solid fa-mobile"></i>+91-7599339966</p>
                         <div class="social-icons">
                             <a href="https://github.com/Astraisaria"><i class="fa-brands fa-github"></i></a>
@@ -304,9 +304,9 @@
                     </div>
                     <div class="contact-right">
                         <form id="contact-form">
-                            <input type = "text" name = "Name" placeholder = "Your Name" required>
-                            <input type = "email" name = "E-mail" placeholder = "Your Email" required>
-                            <textarea name = "Message" rows = "6" placeholder = "Your Message"></textarea>
+                            <input type = "text" id = "name" name = "Name" placeholder = "Your Name" required>
+                            <input type = "email" id = "email" name = "E-mail" placeholder = "Your Email" required>
+                            <textarea id = "message" name = "Message" rows = "6" placeholder = "Your Message"></textarea>
                             <button type = "submit" class = "btn btn2">Submit</button>
                         </form>
                     </div>
@@ -399,7 +399,6 @@
             toggleButton.addEventListener("click", () => {
                 musicControl.classList.toggle("collapsed");
 
-                // Toggle icon change
                 if (musicControl.classList.contains("collapsed")) {
                     toggleButton.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
                 } else {
@@ -464,7 +463,6 @@
                 }
             });
 
-            // Load the first track on page load
             window.addEventListener("load", () => loadTrack(currentTrackIndex));
         </script>        
     </body>

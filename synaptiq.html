@@ -23,13 +23,174 @@
                 </nav>
             </div>
         </div>
-        
+
+        <div id="workspace-shell">
+
+            <aside id="workspace-sidebar">
+
+                <h2>Applications</h2>
+
+                <!--
+                    Sidebar buttons are rendered from the `apps` registry
+                    in the script below — see renderSidebar(). To add a
+                    new app: add an entry to `apps`, drop its HTML partial
+                    in synaptiq_apps/, and it shows up here automatically.
+                -->
+                <div id="app-buttons"></div>
+
+            </aside>
+
+            <main id="workspace-main">
+
+                <h1>SynaptIQ Workspace</h1>
+
+                <div id="app-container">
+                    <p>Select an application.</p>
+                </div>
+
+            </main>
+
+        </div>
+
+        <script>
+            // Registry of available canvas apps.
+            // key   -> used internally and as the partial's filename (synaptiq_apps/<key>.html)
+            // label -> text shown on the sidebar button
+            // init  -> optional function run right after the partial is injected
+            //          (use this to wire up state that plain onclick="" can't cover)
+            const apps = {
+                "synaptiq-rag": {
+                    label: "Chat with Documents",
+                    file: "synaptiq_apps/synaptiq-rag.html",
+                    init: null
+                }
+                // Add more apps here, e.g.:
+                // "another-app": { label: "Another Tool", file: "synaptiq_apps/another-app.html", init: null }
+            };
+
+            function renderSidebar(){
+                const container = document.getElementById("app-buttons");
+                container.innerHTML = "";
+
+                for (const key in apps){
+                    const btn = document.createElement("button");
+                    btn.textContent = apps[key].label;
+                    btn.onclick = () => loadApp(key);
+                    container.appendChild(btn);
+                }
+            }
+
+            async function loadApp(appKey){
+                const app = apps[appKey];
+                const appContainer = document.getElementById("app-container");
+
+                if (!app){
+                    appContainer.innerHTML = `<p>Unknown application: ${appKey}</p>`;
+                    return;
+                }
+
+                appContainer.innerHTML = "<p>Loading...</p>";
+
+                try {
+                    const response = await fetch(app.file);
+
+                    if (!response.ok){
+                        throw new Error(`Failed to load ${app.file} (${response.status})`);
+                    }
+
+                    const html = await response.text();
+                    appContainer.innerHTML = html;
+
+                    if (typeof app.init === "function"){
+                        app.init();
+                    }
+
+                } catch (error){
+                    appContainer.innerHTML = "<p>Couldn't load this application.</p>";
+                    console.error(error);
+                }
+            }
+
+            renderSidebar();
+        </script>
+
+        <script>
+            // Used by the injected synaptiq-rag.html partial (its Send
+            // button calls startJob() directly via inline onclick).
+            async function startJob(){
+
+                try{
+
+                    const promptField = document.getElementById("prompt-input");
+                    const statusField = document.getElementById("job-status");
+
+                    if (!promptField || !statusField) return;
+
+                    const prompt = promptField.value;
+                    statusField.innerText = "Starting...";
+
+                    const response = await fetch(
+                        "https://YOUR-RENDER-URL.onrender.com/start-job",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ prompt })
+                        }
+                    );
+
+                    const data = await response.json();
+                    pollJob(data.jobId);
+
+                }catch(error){
+
+                    const statusField = document.getElementById("job-status");
+                    if (statusField) statusField.innerText = "Server offline.";
+
+                    console.error(error);
+                }
+            }
+
+            function pollJob(jobId){
+
+                const interval = setInterval(async () => {
+
+                    try {
+                        const response = await fetch(
+                            `https://YOUR-RENDER-URL.onrender.com/job/${jobId}`
+                        );
+
+                        const data = await response.json();
+                        const statusField = document.getElementById("job-status");
+
+                        if (!statusField){
+                            clearInterval(interval);
+                            return;
+                        }
+
+                        statusField.innerText = data.status;
+
+                        if (data.status === "completed"){
+                            clearInterval(interval);
+                            statusField.innerText = data.result;
+                        }
+
+                    } catch (error){
+                        clearInterval(interval);
+                        console.error(error);
+                    }
+
+                }, 2000);
+            }
+        </script>
+
         <div id="contact">
             <div class="container">
                 <div class="row">
                     <div class="contact-left">
                         <h1 class = "sub-title">Contact Me</h1>
-                        <p><a href="mailto:ojasvachaarag@gmail.com"><i class="fa-solid fa-paper-plane"></i></a>ojasvachaarag@gmail.com</p>
+                        <p><a href="mailto:ojasvachaarag@gmail.com"><i class="fa-solid fa-paper-plane"></i> ojasvachaarag@gmail.com</a></p>
                         <p><i class="fa-solid fa-mobile"></i>+91-7599339966</p>
                         <div class="social-icons">
                             <a href="https://github.com/Astraisaria"><i class="fa-brands fa-github"></i></a>
@@ -40,9 +201,9 @@
                     </div>
                     <div class="contact-right">
                         <form id="contact-form">
-                            <input type = "text" name = "Name" placeholder = "Your Name" required>
-                            <input type = "email" name = "E-mail" placeholder = "Your Email" required>
-                            <textarea name = "Message" rows = "6" placeholder = "Your Message"></textarea>
+                            <input type = "text" id = "name" name = "Name" placeholder = "Your Name" required>
+                            <input type = "email" id = "email" name = "E-mail" placeholder = "Your Email" required>
+                            <textarea id = "message" name = "Message" rows = "6" placeholder = "Your Message"></textarea>
                             <button type = "submit" class = "btn btn2">Submit</button>
                         </form>
                     </div>
@@ -65,22 +226,6 @@
         </div>        
         
         <script>
-            var tablinks = document.getElementsByClassName("tab-links");
-            var tabcontents = document.getElementsByClassName("tab-contents");
-
-            function opentab(tabname){
-                for(tablink of tablinks){
-                    tablink.classList.remove("active-link");
-                }
-                for(tabcontent of tabcontents){
-                    tabcontent.classList.remove("active-tab");
-                }
-                event.currentTarget.classList.add("active-link");
-                document.getElementById(tabname).classList.add("active-tab");
-            }
-        </script>
-
-        <script>
             var sidemenu = document.getElementById("sidemenu");
             var openmenubutton = document.getElementById("open-menu-button");
 
@@ -96,13 +241,45 @@
         </script>
 
         <script>
+            const form = document.getElementById('contact-form');
+          
+            form.addEventListener('submit', async function (e) {
+              e.preventDefault();
+          
+              const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value
+              };
+          
+              const googleScriptURL = "https://script.google.com/macros/s/AKfycbwoxgq2ZALFJXVyZ9ViHJaOIvCzE6gmDKicu9M8ajD6Z9e4WWAb9qjYdu3RZLVgNS_aBw/exec";
+          
+              try {
+                const response = await fetch(googleScriptURL, {
+                  method: "POST",
+                  mode: "no-cors",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify(formData)
+                });
+          
+                alert("Message sent successfully!");
+                form.reset();
+              } catch (error) {
+                alert("Error submitting form. Please try again.");
+                console.error("Error:", error);
+              }
+            });
+        </script>
+
+        <script>
             const toggleButton = document.getElementById("toggle-control");
             const musicControl = document.querySelector(".music-control");
 
             toggleButton.addEventListener("click", () => {
                 musicControl.classList.toggle("collapsed");
 
-                // Toggle icon change
                 if (musicControl.classList.contains("collapsed")) {
                     toggleButton.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
                 } else {
@@ -167,7 +344,6 @@
                 }
             });
 
-            // Load the first track on page load
             window.addEventListener("load", () => loadTrack(currentTrackIndex));
         </script>        
     </body>
