@@ -1,0 +1,97 @@
+<!--
+    Component reference. Not a real page — just a copy-paste library of
+    recurring markup patterns already used across index.html/projects.html,
+    kept in one place so they don't drift out of sync between pages.
+-->
+
+
+<!-- ===================================================================
+     Tabbed content block (used in the About and Projects sections)
+     =================================================================== -->
+
+<div class = "tab-titles">
+    <p class = "tab-links active-link" onclick = "opentab('tab-one')">Tab One</p>
+    <p class = "tab-links" onclick = "opentab('tab-two')">Tab Two</p>
+</div>
+
+<div class = "tab-contents active-tab" id = "tab-one">
+    <ul>
+        <li>
+            <span>Item Label</span>
+            <br>
+            Item description text.
+        </li>
+    </ul>
+</div>
+
+<div class = "tab-contents" id = "tab-two">
+    <ul>
+        <li>
+            <span>Item Label</span>
+            <br>
+            Item description text.
+        </li>
+    </ul>
+</div>
+
+<!-- Requires this script once per page (already present in page_template.html
+     if you add a tab block, otherwise add it):
+
+<script>
+    var tablinks = document.getElementsByClassName("tab-links");
+    var tabcontents = document.getElementsByClassName("tab-contents");
+
+    function opentab(tabname){
+        for(tablink of tablinks){
+            tablink.classList.remove("active-link");
+        }
+        for(tabcontent of tabcontents){
+            tabcontent.classList.remove("active-tab");
+        }
+        event.currentTarget.classList.add("active-link");
+        document.getElementById(tabname).classList.add("active-tab");
+    }
+</script>
+-->
+
+
+<!-- ===================================================================
+     Work/project card (used in the Projects grid, .work-list)
+     =================================================================== -->
+
+<div class="work">
+    <img src = "Assets/Images/work-placeholder.png">
+    <div class="layer">
+        <h3>Project Title</h3>
+        <p>One or two sentence description of the project.</p>
+        <a href = "https://github.com/your-repo"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+    </div>
+</div>
+
+<!-- Wrap one or more of these in: <div class="work-list">...</div> -->
+
+
+<!-- ===================================================================
+     Experience/timeline list item (used in the About > Experience tab)
+     =================================================================== -->
+
+<li>
+    <span>
+        Role Title - Organization
+    </span>
+    <span class = "experience-time">
+        (Month Year - Month Year)
+    </span>
+    <br>
+    One-line description of the role or project.
+</li>
+
+
+<!-- ===================================================================
+     Standalone call-to-action button
+     =================================================================== -->
+
+<a href = "#" class = "btn">Button Label</a>
+
+<!-- Filled variant: -->
+<a href = "#" class = "btn btn2">Button Label</a>
