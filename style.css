@@ -117,6 +117,8 @@ nav ul li a:hover::after{
 .tab-titles{
     display: flex;
     margin: 20px 0 40px;
+    flex-wrap: wrap;
+    row-gap: 15px;
 }
 
 .tab-links{
@@ -192,6 +194,12 @@ nav ul li a:hover::after{
 
 .experience-time{
     font-size: 14px;
+}
+
+.tab-contents ul li span.experience-time{
+    color: #f1faee;
+    font-size: 14px;
+    font-weight: 300;
 }
 
 .tab-contents{
