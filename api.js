@@ -3,14 +3,14 @@
 // ============================================================================
 // Set your API Base URL, API Key, and route endpoints below when ready.
 const API_CONFIG = {
-    // Base URL for the backend API (e.g., "https://api.yourdomain.com" or "http://localhost:8000")
-    baseURL: "",
+    // Base URL for the backend API (defaults to http://localhost:8000, configurable via localStorage)
+    baseURL: (typeof localStorage !== "undefined" && localStorage.getItem("ojasva_api_base")) || "http://localhost:8000",
 
     // API Key for authenticating requests (sent via X-API-Key and Authorization Bearer headers)
     apiKey: "",
 
-    // Route for contact form submissions (to be configured later, e.g., "/api/v1/contact")
-    contactRoute: ""
+    // Dedicated contact submission endpoint in the ojasvachaarag module
+    contactRoute: "/api/v1/ojasvachaarag/contact"
 };
 
 /**
